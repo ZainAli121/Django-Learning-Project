@@ -12,3 +12,9 @@ class ProjectForm(ModelForm):
 
         for key, value in self.fields.items():
             value.widget.attrs.update({'class': 'input'})
+
+class RegisterForm(ModelForm):
+    class Meta:
+        model = Register
+        fields = '__all__'
+        exclude = ['email']

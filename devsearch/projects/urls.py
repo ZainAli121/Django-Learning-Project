@@ -7,4 +7,7 @@ urlpatterns = [
     path('create-project/', views.createProject, name='create-project'),
     path('update-project/<str:pk>/', views.updateProject, name='update-Project'),
     path('delete-project/<str:pk>/', views.deleteProject, name='delete-Project'),
+    path('signup/', views.signupUser, name='signupUser'),
+    path('login/', views.loginUser, name='loginUser'),
+    
 ]
