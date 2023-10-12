@@ -1,10 +1,36 @@
 {% extends 'main.html' %}
+{% load static %}
 
 {% block content %}
-    <h4>login page</h4>
-    <form method="post" action="">
-    {% csrf_token %}
-    {{userform.as_p}}
-    <input type="submit" value="Register">
-    </form>
+        <div class="auth">
+          <div class="card">
+            <div class="auth__header text-center">
+              <a href="/">
+                 <img src="{% static 'images/icon.svg' %}" alt="icon" style="width: 25%;" />
+              </a>
+              <h3>Account Login</h3>
+              <p>Hello Developer, Welcome Back!</p>
+            </div>
+    
+            <form method="post" action="" class="form auth__form" enctype="multipart/form-data">
+                {% csrf_token %}
+
+              {% for field in userform %}
+              <div class="form__field">
+                <label for="formInput#text">{{field.label}}: </label>
+                {{field}}
+              </div>
+              {% endfor %}
+
+              <div class="auth__actions">
+                <input class="btn btn--sub btn--lg" type="submit" value="Log In" />
+                <a href="#">Forget Password?</a>
+              </div>
+            </form>
+            <div class="auth__alternative">
+              <p>Don’t have an Account?</p>
+              <a href="#">Sign Up</a>
+            </div>
+          </div>
+        </div>
 {% endblock %}

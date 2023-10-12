@@ -18,3 +18,9 @@ class RegisterForm(ModelForm):
         model = Register
         fields = '__all__'
         exclude = ['email']
+
+    def __init__(self, *args, **kwargs):
+        super(RegisterForm, self).__init__(*args, **kwargs)
+
+        for key, value in self.fields.items():
+            value.widget.attrs.update({'class': 'input'})
