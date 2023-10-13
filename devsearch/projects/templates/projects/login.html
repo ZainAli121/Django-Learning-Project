@@ -5,6 +5,9 @@
         <div class="auth">
           <div class="card">
             <div class="auth__header text-center">
+              <br>
+              <br>
+              <br>
               <a href="/">
                  <img src="{% static 'images/icon.svg' %}" alt="icon" style="width: 25%;" />
               </a>
@@ -29,7 +32,7 @@
             </form>
             <div class="auth__alternative">
               <p>Don’t have an Account?</p>
-              <a href="#">Sign Up</a>
+              <a href="{% url 'signupUser' %}">Sign Up</a>
             </div>
           </div>
         </div>

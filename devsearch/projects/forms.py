@@ -17,7 +17,7 @@ class RegisterForm(ModelForm):
     class Meta:
         model = Register
         fields = '__all__'
-        exclude = ['email']
+        # exclude = ['email']
 
     def __init__(self, *args, **kwargs):
         super(RegisterForm, self).__init__(*args, **kwargs)

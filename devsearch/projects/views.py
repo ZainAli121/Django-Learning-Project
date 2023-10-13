@@ -47,7 +47,21 @@ def deleteProject(request, pk):
     return render(request, 'projects/delete.html', {'object': project})
 
 def signupUser(request):
-    pass
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        email = request.POST.get('email')
+
+        if User.objects.filter(username = username).exists():
+            return redirect('signupUser')
+        
+        user = User.objects.create_user(username=username, password=password, email=email)
+        user.save()
+        return redirect('/')
+
+    userform = RegisterForm()
+    context = {'userform' : userform}
+    return render(request, 'projects/signup.html', context)
 
 def loginUser(request):
     if request.method == 'POST':
