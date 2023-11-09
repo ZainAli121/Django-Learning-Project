@@ -17,18 +17,24 @@
     
             <form method="post" action="" class="form auth__form" enctype="multipart/form-data">
                 {% csrf_token %}
-
-              {% for field in userform %}
               <div class="form__field">
-                <label for="formInput#text">{{field.label}}: </label>
-                {{field}}
+                <label for="formInput#text">Username: </label>
+                <input type="text" name="username" id="formInput#text" placeholder="Enter your username" required />
               </div>
-              {% endfor %}
+
+              <div class="form__field">
+                <label for="formInput#text">Password: </label>
+                <input type="password" name="password" placeholder=".........">
+              </div>
 
               <div class="auth__actions">
+                <input class="btn btn--sub btn--lg" type="submit" value="Sign  In" />
+              </div>
+
+              <!-- <div class="auth__actions">
                 <input class="btn btn--sub btn--lg" type="submit" value="Log In" />
                 <a href="#">Forget Password?</a>
-              </div>
+              </div> -->
             </form>
             <div class="auth__alternative">
               <p>Don’t have an Account?</p>

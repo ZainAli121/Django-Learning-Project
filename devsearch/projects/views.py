@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 from .models import *
 from .forms import *
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 def projects(request):
@@ -17,16 +18,32 @@ def project(request, pk):
     context = {'project' : projectObj, 'tags' : tags, 'reviews': reviews}
     return render(request, 'projects/single-project.html', context)
 
+@login_required(login_url='loginUser')
 def createProject(request):
-    if request.method == 'POST':
-        form = ProjectForm(request.POST, request.FILES)
-        if form.is_valid:
-            form.save()
-            return redirect ('/')
     form = ProjectForm()
-    context = {'form': form}
+    tags = Tag.objects.all()
+
+    if request.method == 'POST':
+        tag_names = request.POST.getlist('tag')
+        tag, created = Tag.objects.get_or_create(name=tag_names)
+
+        project = Project.objects.create(
+            owner = request.user,
+            # tags = tag,
+            title = request.POST.get('title'),
+            description = request.POST.get('description'),
+            demo_link = request.POST.get('demo_link'),
+            source_code = request.POST.get('source_code'),
+            featured_image = request.FILES.get('featured_image'),
+        )
+
+        project.tags.set(Tag.objects.filter(name__in=tag_names))
+        return redirect('projects')
+        
+    context = {'form': form, 'tags': tags}
     return render(request, 'projects/project-form.html', context)
 
+@login_required(login_url='loginUser')
 def updateProject(request, pk):
     project = Project.objects.get(id=pk)
     form = ProjectForm(instance=project)
@@ -38,6 +55,7 @@ def updateProject(request, pk):
     context = {'form': form}
     return render(request, 'projects/project-form.html', context)
 
+@login_required(login_url='loginUser')
 def deleteProject(request, pk):
     project = Project.objects.get(id=pk)
 
@@ -47,36 +65,56 @@ def deleteProject(request, pk):
     return render(request, 'projects/delete.html', {'object': project})
 
 def signupUser(request):
+    form = RegisterForm()
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        email = request.POST.get('email')
-
-        if User.objects.filter(username = username).exists():
-            return redirect('signupUser')
-        
-        user = User.objects.create_user(username=username, password=password, email=email)
-        user.save()
-        return redirect('/')
-
-    userform = RegisterForm()
-    context = {'userform' : userform}
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.username = user.username.lower()
+            user.save()
+            login(request, user)
+        return redirect('projects')
+    
+    context = {'form' : form}
     return render(request, 'projects/signup.html', context)
 
 def loginUser(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
+        username = request.POST.get('username').lower()
         password = request.POST.get('password')
-        email = request.POST.get('email')
+        user = User.objects.get(username=username)
 
-        user = authenticate( request, username=username, password=password, email=email)
+        user = authenticate(request, username=username, password=password)
 
         if user is not None:
             login(request, user)
-            return redirect('/')
+            return redirect('projects')
         else:
             return redirect('loginUser')
+    return render(request, 'projects/login.html')
+
+def logoutUser(request):
+    logout(request)
+    return redirect('projects')
+
+@login_required(login_url='loginUser')
+def devProfile(request, pk):
+    user = User.objects.get(id=pk)
+    projects = user.project_set.all()
+    skills = user.skills.all()
+    context = {'projects': projects, 'user': user, 'skills': skills}
+
+    return render(request, 'projects/profile.html', context)
+
+@login_required(login_url='loginUser')
+def updateProfile(request, pk):
+    user = request.user
+    form = UserForm(instance=user)
+    if request.method == 'POST':
+        form = UserForm(request.POST, request.FILES ,instance=user)
+        if form.is_valid:
+            form.save()
+            return redirect('profile', pk=user.id)
         
-    userform = RegisterForm()
-    context = {'userform' : userform}
-    return render(request, 'projects/login.html', context)
+    context = {'form': form}
+    return render(request, 'projects/update-profile.html', context)

@@ -11,12 +11,43 @@
             <form class="form" method="POST" action="" enctype="multipart/form-data">
                 {% csrf_token %}
                 <!-- Input:Text -->
-                {% for field in form %}
                 <div class="form__field">
-                    <label for="formInput#text">{{field.label}}: </label>
-                    {{field}}
+                    <label for="formInput#text">Title: </label>
+                    {{form.title}}
                 </div>
-                    {% endfor %}
+
+                <div class="form__field">
+                    <label for="formInput#text">Description: </label>
+                    {{form.description}}
+                </div>
+
+                <div class="form__field">
+                    <label for="formInput#text">Tags: </label>
+                    <input type="text" name="tag" value="{{project.tags.name}}" list="tag-list">
+                <datalist id="tag-list">
+                    <select id="formInput#text">
+                        {% for tag in tags %}
+                            <option value="{{tag.name}}">{{tag.name}}</option>
+                        {% endfor %}
+                    </select>
+                </datalist>
+                </div>
+
+                <div class="form__field">
+                    <label for="formInput#text">Image: </label>
+                   {{form.featured_image}}
+                </div>
+
+                <div class="form__field">
+                    <label for="formInput#text">Demo Link: </label>
+                    {{form.demo_link}}
+                </div>
+
+                <div class="form__field">
+                    <label for="formInput#text">Source Code: </label>
+                    {{form.source_code}}
+                </div>
+
                 <input class="btn btn--sub btn--lg  my-md" type="submit" value="Submit" />
             </form>
         </div>

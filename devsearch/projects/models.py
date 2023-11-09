@@ -1,11 +1,11 @@
 from django.db import models
 import uuid
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
 # Project model 
 class Project(models.Model):
-    # Owner field
+    owner = models.ForeignKey('User', on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     featured_image = models.ImageField(null=True, blank=True, default= 'default.jpg')
@@ -13,7 +13,7 @@ class Project(models.Model):
     source_code = models.CharField(max_length=1000, null=True, blank=True)
     vote_total = models.IntegerField(default=0)
     vote_ratio = models.IntegerField(default=0)
-    tags = models.ManyToManyField('Tag', null=True, blank=True)  # Stringfy the model if it is defined below
+    tags = models.ManyToManyField('Tag', blank=True)  # Stringfy the model if it is defined below
     created = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
 
@@ -54,12 +54,14 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
-    
-class Register(models.Model):
-    username = models.CharField(max_length=100, null=True)
-    email = models.CharField(max_length=100, null=True)
-    password = models.CharField(max_length=100, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return self.username
+
+class User(AbstractUser):
+    name = models.CharField(max_length=200, null=True)
+    username = models.CharField(unique=True, max_length=200)
+    email = models.EmailField(unique=True, null=True)
+    bio = models.TextField(null=True)
+    skills = models.ManyToManyField(Tag, blank=True)
+    profile_pic = models.ImageField(null=True, blank=True, default='default.jpg')
+
+    REQUIRED_FIELDS = []

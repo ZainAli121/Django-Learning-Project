@@ -16,7 +16,7 @@
 
       <form method="post" action="" class="form auth__form">
         {% csrf_token %}
-        {% for field in userform %}
+        {% for field in form %}
         <div class="form__field">
           <label for="formInput#text"> {{field.label}}:</label>
           {{field}}
@@ -24,12 +24,12 @@
         {% endfor %}
         
         <div class="auth__actions">
-          <input class="btn btn--sub btn--lg" type="submit" value="Sign  In" />
+          <input class="btn btn--sub btn--lg" type="submit" value="SignUp" />
         </div>
       </form>
       <div class="auth__alternative">
         <p>Already have an Account?</p>
-        <a href="{% url 'signupUser' %}">Log In</a>
+        <a href="{% url 'loginUser' %}">Log In</a>
       </div>
     </div>
   </div>

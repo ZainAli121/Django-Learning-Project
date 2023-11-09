@@ -9,5 +9,8 @@ urlpatterns = [
     path('delete-project/<str:pk>/', views.deleteProject, name='delete-Project'),
     path('signup/', views.signupUser, name='signupUser'),
     path('login/', views.loginUser, name='loginUser'),
+    path('logout/', views.logoutUser, name='logoutUser'),
+    path('profile/<str:pk>/', views.devProfile, name='profile'),
+    path('update-profile/<str:pk>/', views.updateProfile, name='update-profile'),
     
 ]
