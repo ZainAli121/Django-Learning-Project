@@ -135,3 +135,15 @@ def updateProfile(request, pk):
         
     context = {'form': form}
     return render(request, 'projects/update-profile.html', context)
+
+def developers(request):
+    query = request.GET.get('query') if request.GET.get('query') != None else ''
+    developers = User.objects.filter(
+        Q(name__icontains=query) |
+        Q(username__icontains=query) |
+        Q(bio__icontains=query) |
+        Q(skills__name__icontains=query)
+    )
+    developers = list(set(developers))
+    context = {'developers': developers}
+    return render(request, 'projects/developers.html', context)
