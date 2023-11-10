@@ -4,10 +4,15 @@ from django.http import HttpResponse
 from .models import *
 from .forms import *
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 # Create your views here.
 
 def projects(request):
-    projects = Project.objects.all()         # All projects
+    query = request.GET.get('query') if request.GET.get('query') != None else ''
+    projects = Project.objects.filter(
+        Q(title__icontains=query) |
+        Q(description__icontains=query)
+                                      )         # All projects
     context = {'projects' : projects}
     return render( request, 'projects/projects.html', context)
 
@@ -15,7 +20,17 @@ def project(request, pk):
     projectObj = Project.objects.get(id=pk)  # Single project
     tags = projectObj.tags.all()             # project tags
     reviews = projectObj.review_set.all()
-    context = {'project' : projectObj, 'tags' : tags, 'reviews': reviews}
+    project_messages = projectObj.message_set.all()
+
+    if request.method == 'POST':
+        message = Message.objects.create(
+            user = request.user,
+            project = projectObj,
+            body = request.POST.get('body') 
+        )
+        return redirect('project', pk=projectObj.id)
+
+    context = {'project' : projectObj, 'tags' : tags, 'reviews': reviews, 'project_messages': project_messages}
     return render(request, 'projects/single-project.html', context)
 
 @login_required(login_url='loginUser')
@@ -73,7 +88,9 @@ def signupUser(request):
             user.username = user.username.lower()
             user.save()
             login(request, user)
-        return redirect('projects')
+            return redirect('projects')
+        else:
+            return redirect('signupUser')
     
     context = {'form' : form}
     return render(request, 'projects/signup.html', context)

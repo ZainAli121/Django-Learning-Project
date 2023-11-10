@@ -65,3 +65,17 @@ class User(AbstractUser):
     profile_pic = models.ImageField(null=True, blank=True, default='default.jpg')
 
     REQUIRED_FIELDS = []
+
+class Message(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    body = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+
+    class Meta:
+        ordering = ['-updated'  , '-created']
+
+    def __str__(self):
+         return self.body[0:50]
