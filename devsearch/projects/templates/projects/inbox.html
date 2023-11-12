@@ -1,0 +1,22 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<!-- Main Section -->
+<main class="inbox my-xl">
+  <div class="content-box">
+    <h3 class="inbox__title">New Messages(<span>{{inbox_messages.count}}</span>)</h3>
+    <ul class="messages">
+      {% for message in inbox_messages %}
+      <li class="message message--unread">
+        <a href="{% url 'project' message.project.id %}">
+          <span class="message__author">{{message.user.name}}</span>
+          <span class="message__subject">{{message.body}}</span>
+          <span class="message__date">{{message.created |timesince}} ago</span>
+        </a>
+      </li>
+      {% endfor %}
+
+    </ul>
+  </div>
+</main>
+{% endblock content %}

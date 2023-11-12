@@ -47,7 +47,7 @@
         <div class="comments">
           <h3 class="singleProject__subtitle">Feedback</h3>
           <h5 class="project--rating">
-            {{project.vote_ratio}}% Postitive Feedback ({{project.vote_total}})
+            {{reviews.count}}% Postitive Feedback ({{project_messages.count}})
           </h5>
 
           {% if request.user.is_authenticated %}

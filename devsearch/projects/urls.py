@@ -13,5 +13,6 @@ urlpatterns = [
     path('profile/<str:pk>/', views.devProfile, name='profile'),
     path('update-profile/<str:pk>/', views.updateProfile, name='update-profile'),
     path('developers/', views.developers, name='developers'),
+    path('inbox/', views.inbox, name='inbox'),
     
 ]

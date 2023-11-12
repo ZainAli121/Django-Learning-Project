@@ -21,6 +21,7 @@ def project(request, pk):
     tags = projectObj.tags.all()             # project tags
     reviews = projectObj.review_set.all()
     project_messages = projectObj.message_set.all()
+    reviews = projectObj.review_set.all()
 
     if request.method == 'POST':
         message = Message.objects.create(
@@ -30,7 +31,7 @@ def project(request, pk):
         )
         return redirect('project', pk=projectObj.id)
 
-    context = {'project' : projectObj, 'tags' : tags, 'reviews': reviews, 'project_messages': project_messages}
+    context = {'project' : projectObj, 'tags' : tags, 'reviews': reviews, 'project_messages': project_messages, 'reviews': reviews}
     return render(request, 'projects/single-project.html', context)
 
 @login_required(login_url='loginUser')
@@ -147,3 +148,11 @@ def developers(request):
     developers = list(set(developers))
     context = {'developers': developers}
     return render(request, 'projects/developers.html', context)
+
+def inbox(request):
+    user = request.user
+    user_projects = Project.objects.filter(owner=user)
+
+    inbox_messages = Message.objects.filter(project__in=user_projects).exclude(user=user)
+    context = {'inbox_messages' : inbox_messages}
+    return render(request, 'projects/inbox.html', context)
